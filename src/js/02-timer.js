@@ -11,18 +11,12 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    console.log(selectedDates[0]);
-    chosenTime = selectedDates[0].getTime();
-    isAvailableDate = chosenTime - Date.now();
-    if (isAvailableDate <= 0) {
-      alert(
-        'You cannot select a past date',
-        'Please choose a date in the future',
-        'Ok'
-      );
+    if (selectedDates < Date.now()) {
+      Notify.info('Please choose a date in the future');
       return;
     }
-    refs.startBtnEl.removeAttribute('disabled');
+    refs.button.disabled = false;
+    selectedDate = selectedDates;
   },
 };
 
@@ -37,7 +31,7 @@ export const refs = {
   daysUi: document.querySelector('[data-days]'),
 };
 
-window.addEventListener('click', startTimer);
+refs.button.addEventListener('click', startTimer);
 
 function startTimer(e) {
   if (e.target.nodeName !== 'BUTTON') return;
@@ -51,7 +45,7 @@ function countDownTimer() {
   const diff = userDate - Date.now();
   let { days, hours, minutes, seconds } = getTimeComponents(diff);
   if (userDate <= Date.now()) {
-    Notify.info('Please, choose date in future');
+    Notify.info('Please, choose date in the future');
     clearInterval(timerID);
     refs.input.disabled = false;
   }
